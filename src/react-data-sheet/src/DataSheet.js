@@ -84,6 +84,12 @@ export default class DataSheet extends PureComponent {
     }
 
     componentDidMount() {
+
+        console.log("temp-===>");
+        console.log("temp-===>");
+        console.log("temp-===>");
+        console.log("temp-===>");
+
         // Add listener scoped to the DataSheet that catches otherwise unhandled
         // keyboard events when displaying components
         this.dgDom &&
@@ -365,6 +371,8 @@ export default class DataSheet extends PureComponent {
                 }
             });
         });
+
+
         return selected;
     }
 
