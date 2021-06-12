@@ -25,6 +25,7 @@ export default class DataEditor extends PureComponent {
                     this._input = input;
                 }}
                 className="data-editor"
+                style={{height:14}}
                 value={value}
                 onChange={this.handleChange}
                 onKeyDown={onKeyDown}

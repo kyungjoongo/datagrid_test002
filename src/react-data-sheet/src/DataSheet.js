@@ -17,6 +17,8 @@ import {
     DOWN_KEY,
     RIGHT_KEY,
 } from './keys';
+import Datasheet from "./index";
+
 
 const isEmpty = obj => Object.keys(obj).length === 0;
 
@@ -27,6 +29,8 @@ const range = (start, end) => {
     for (let i = start; inc ? i <= end : i >= end; inc ? i++ : i--) {
         inc ? array.push(i) : array.unshift(i);
     }
+
+
     return array;
 };
 
@@ -41,6 +45,7 @@ export default class DataSheet extends PureComponent {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseOver = this.onMouseOver.bind(this);
+        this.onTouchStart = this.onTouchStart.bind(this);
         this.onDoubleClick = this.onDoubleClick.bind(this);
         this.onContextMenu = this.onContextMenu.bind(this);
         this.handleNavigate = this.handleNavigate.bind(this);
@@ -55,7 +60,6 @@ export default class DataSheet extends PureComponent {
         this.isEditing = this.isEditing.bind(this);
         this.isClearing = this.isClearing.bind(this);
         this.handleComponentKey = this.handleComponentKey.bind(this);
-
         this.handleKeyboardCellMovement = this.handleKeyboardCellMovement.bind(
             this,
         );
@@ -213,6 +217,8 @@ export default class DataSheet extends PureComponent {
     }
 
     handlePaste(e) {
+
+
         if (isEmpty(this.state.editing)) {
             let {start, end} = this.getState();
 
@@ -250,6 +256,8 @@ export default class DataSheet extends PureComponent {
                     onCellsChanged(changes);
                 }
             } else if (onPaste) {
+
+
                 pasteData.forEach((row, i) => {
                     const rowData = [];
                     row.forEach((pastedData, j) => {
@@ -371,8 +379,7 @@ export default class DataSheet extends PureComponent {
                 }
             });
         });
-
-
+        console.log("getSelectedCells-===>", selected);
         return selected;
     }
 
@@ -420,6 +427,7 @@ export default class DataSheet extends PureComponent {
     }
 
     searchForNextSelectablePos(isCellNavigable, data, start, offsets, jumpRow) {
+
         const previousRow = location => ({
             i: location.i - 1,
             j: data[0].length - 1,
@@ -550,6 +558,8 @@ export default class DataSheet extends PureComponent {
     }
 
     onMouseDown(i, j, e) {
+        console.log("onMouseDown-===>", i, j);
+
         const isNowEditingSameCell =
             !isEmpty(this.state.editing) &&
             this.state.editing.i === i &&
@@ -579,7 +589,7 @@ export default class DataSheet extends PureComponent {
         // Keep listening to mouse if user releases the mouse (dragging outside)
         document.addEventListener('mouseup', this.onMouseUp);
         // Listen for any outside mouse clicks
-        document.addEventListener('mousedown', this.pageClick);
+        //document.addEventListener('mousedown', this.pageClick);
 
         // Cut, copy and paste event handlers
         document.addEventListener('cut', this.handleCut);
@@ -593,9 +603,18 @@ export default class DataSheet extends PureComponent {
         }
     }
 
+    //onTouchStart
+    onTouchStart(i, j) {
+        console.log("touchStart");
+        if (this.state.selecting && isEmpty(this.state.editing)) {
+            this._setState({end: {i, j}});
+        }
+    }
+
     onMouseUp() {
         this._setState({selecting: false});
         document.removeEventListener('mouseup', this.onMouseUp);
+
     }
 
     onChange(row, col, value) {
@@ -621,6 +640,11 @@ export default class DataSheet extends PureComponent {
             !(end.i === prevEnd.i && end.j === prevEnd.j) &&
             !this.isSelectionControlled()
         ) {
+
+            //todo: 셀이 다중으로 선택되는 경우...
+            console.log("start-===>",start);
+            console.log("end-===>",end);
+
             this.props.onSelect && this.props.onSelect({start, end});
         }
     }
@@ -686,7 +710,9 @@ export default class DataSheet extends PureComponent {
                               cell={cell}
                               forceEdit={false}
                               onMouseDown={this.onMouseDown}
+                              onTouchMove={this.onTouchMove}
                               onMouseOver={this.onMouseOver}
+                              onTouchStart={this.onTouchStart}
                               onDoubleClick={this.onDoubleClick}
                               onContextMenu={this.onContextMenu}
                               onChange={this.onChange}

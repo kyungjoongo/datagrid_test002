@@ -26,7 +26,11 @@ export default class Cell extends PureComponent {
             <td
                 className={className}
                 onMouseDown={onMouseDown}
-                onMouseOver={onMouseOver}
+                onTouchStart={this.props.onTouchStart}
+                onTouchMove={() => {
+                    console.log("onTouchMove-===>");
+                }}
+                onMouseOver={this.props.onMouseOver}
                 onDoubleClick={onDoubleClick}
                 onTouchEnd={onDoubleClick}
                 onContextMenu={onContextMenu}
@@ -51,6 +55,7 @@ Cell.propTypes = {
     attributesRenderer: PropTypes.func,
     onMouseDown: PropTypes.func.isRequired,
     onMouseOver: PropTypes.func.isRequired,
+    onTouchStart: PropTypes.func,
     onDoubleClick: PropTypes.func.isRequired,
     onContextMenu: PropTypes.func.isRequired,
     className: PropTypes.string,

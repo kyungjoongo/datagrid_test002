@@ -40,6 +40,7 @@ export default class DataCell extends PureComponent {
         this.handleKey = this.handleKey.bind(this);
         this.handleMouseDown = this.handleMouseDown.bind(this);
         this.handleMouseOver = this.handleMouseOver.bind(this);
+        this.handleTouchStart = this.handleTouchStart.bind(this);
         this.handleContextMenu = this.handleContextMenu.bind(this);
         this.handleDoubleClick = this.handleDoubleClick.bind(this);
 
@@ -80,10 +81,12 @@ export default class DataCell extends PureComponent {
     }
 
     handleChange(value) {
+        console.log("temp-===>", value);
         this.setState({value, committing: false});
     }
 
     handleCommit(value, e) {
+
         const {onChange, onNavigate} = this.props;
         if (value !== initialData(this.props)) {
             this.setState({value, committing: true});
@@ -105,16 +108,26 @@ export default class DataCell extends PureComponent {
     handleMouseDown(e) {
         const {row, col, onMouseDown, cell} = this.props;
         if (!cell.disableEvents) {
-            onMouseDown(row, col, e);
+            this.props.onMouseDown(row, col, e);
         }
     }
 
     handleMouseOver(e) {
+        console.log("handleMouseOver-===>");
+
         const {row, col, onMouseOver, cell} = this.props;
         if (!cell.disableEvents) {
             onMouseOver(row, col);
         }
     }
+
+    handleTouchStart(e) {
+        const {row, col, onTouchStart, cell} = this.props;
+        if (!cell.disableEvents) {
+            this.props.onTouchStart(row, col, e);
+        }
+    }
+
 
     handleDoubleClick(e) {
         const {row, col, onDoubleClick, cell} = this.props;
@@ -210,11 +223,12 @@ export default class DataCell extends PureComponent {
             editing && 'editing',
             cell.readOnly && 'read-only',
             updated && 'updated',
-        ]
-            .filter(a => a)
-            .join(' ');
+        ].filter(a => a).join(' ');
+
 
         return (
+
+
             <CellRenderer
                 row={row}
                 col={col}
@@ -226,6 +240,7 @@ export default class DataCell extends PureComponent {
                 className={className}
                 style={widthStyle(cell)}
                 onMouseDown={this.handleMouseDown}
+                onTouchStart={this.handleTouchStart}
                 onMouseOver={this.handleMouseOver}
                 onDoubleClick={this.handleDoubleClick}
                 onContextMenu={this.handleContextMenu}
@@ -233,7 +248,8 @@ export default class DataCell extends PureComponent {
             >
                 {content}
             </CellRenderer>
-        );
+        )
+            ;
     }
 }
 
@@ -255,6 +271,7 @@ DataCell.propTypes = {
     onNavigate: PropTypes.func.isRequired,
     onMouseDown: PropTypes.func.isRequired,
     onMouseOver: PropTypes.func.isRequired,
+    onTouchStart: PropTypes.func,
     onDoubleClick: PropTypes.func.isRequired,
     onContextMenu: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
